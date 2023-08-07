@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Hazard Map</title>
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet" />
+</head>
+<body>
+    <div id="map" style="width: 100%; height: 500px;"></div>
+    <script>
+        mapboxgl.accessToken = 'pk.eyJ1Ijoic2FpdGVqMTMiLCJhIjoiY2xsMTI3angyMXV0cjNqbXptY2tqbnVwMyJ9.15M_mLtGauvcpDJfzOFjZA';
+
+        var map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [78.682184, 17.452411],
+            zoom: 14
+        });
+
+        var userLocation = [78.685164, 17.453073]; // User's current location
+
+        var DISTANCE_THRESHOLD = 100; // Adjust this value as needed, in meters
+
+        var hazardData = [
+            { lng: 78.682184, lat: 17.452411, type: 'Pothole' }
+            // Add more hazard data...
+        ];
+
+        hazardData.forEach(function (hazard) {
+            var hazardLngLat = [hazard.lng, hazard.lat];
+            var distance = mapboxgl.LngLat.distance(userLocation, hazardLngLat);
+
+            if (distance < DISTANCE_THRESHOLD) {
+                alert('Caution: There is a ' + hazard.type + ' nearby. Drive cautiously.');
+            }
+
+            var popup = new mapboxgl.Popup().setText('Type: ' + hazard.type);
+
+            new mapboxgl.Marker()
+                .setLngLat(hazardLngLat)
+                .setPopup(popup)
+                .addTo(map);
+        });
+    </script>
+</body>
+</html>
