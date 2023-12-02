@@ -3,10 +3,54 @@
 <head>
     <title>Hazard Map</title>
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.js"></script>
+    <script src="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.js"></script>
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.3.1/mapbox-gl.css" rel="stylesheet" />
+    <link
+      rel="stylesheet"
+      href="https://api.mapbox.com/mapbox-gl-js/plugins/mapbox-gl-directions/v4.1.0/mapbox-gl-directions.css"
+      type="text/css"
+    />
+    <style>
+        /* Styles for the popup */
+        .popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .popup-content {
+            text-align: center;
+        }
+
+        #closePopup {
+            margin-top: 10px;
+            padding: 5px 10px;
+            background-color: #007BFF;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        #closePopup:hover {
+            background-color: #0056b3;
+        }
+    </style>
 </head>
 <body>
     <div id="map" style="width: 100%; height: 500px;"></div>
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <h3>Alert!</h3>
+            <p>You are within 100 meters of a hazard.</p>
+            <button id="closePopup">Close</button>
+        </div>
+    </div>
     <script>
         mapboxgl.accessToken = 'pk.eyJ1Ijoic2FpdGVqMTMiLCJhIjoiY2xsMTI3angyMXV0cjNqbXptY2tqbnVwMyJ9.15M_mLtGauvcpDJfzOFjZA';
 
@@ -17,30 +61,72 @@
             zoom: 14
         });
 
-        var userLocation = [78.685164, 17.453073]; // User's current location
-
-        var DISTANCE_THRESHOLD = 100; // Adjust this value as needed, in meters
-
         var hazardData = [
-            { lng: 78.682184, lat: 17.452411, type: 'Pothole' }
+            { lngLat: [78.204742, 17.068023], type: 'Pothole' },
+            { lngLat: [78.202804, 17.061196], type: 'Pothole' },
+            { lngLat: [78.202759, 17.059854], type: 'Pothole' },
+            { lngLat: [78.203222, 17.059308], type: 'Pothole' },
+    { lngLat: [78.205320, 17.059511], type: 'Pothole' },
+    { lngLat: [78.205981, 17.061961], type: 'Pothole' },
+    { lngLat: [78.203765, 17.063418], type: 'Pothole' },
+    { lngLat: [78.202503, 17.065025], type: 'Pothole' },
+    { lngLat: [78.204097, 17.064567], type: 'Pothole' }
             // Add more hazard data...
         ];
 
-        hazardData.forEach(function (hazard) {
-            var hazardLngLat = [hazard.lng, hazard.lat];
-            var distance = mapboxgl.LngLat.distance(userLocation, hazardLngLat);
+        hazardData.forEach(function(hazard) {
+            var popup = new mapboxgl.Popup({ offset: 25 }).setText('Type: ' + hazard.type);
 
-            if (distance < DISTANCE_THRESHOLD) {
-                alert('Caution: There is a ' + hazard.type + ' nearby. Drive cautiously.');
-            }
-
-            var popup = new mapboxgl.Popup().setText('Type: ' + hazard.type);
-
-            new mapboxgl.Marker()
-                .setLngLat(hazardLngLat)
+            var hazardMarker = new mapboxgl.Marker({ color: 'blue' })
+                .setLngLat(hazard.lngLat)
                 .setPopup(popup)
                 .addTo(map);
+        });
+
+        // Add geolocation control to the map
+        map.addControl(new mapboxgl.GeolocateControl({
+            positionOptions: {
+                enableHighAccuracy: true
+            },
+            trackUserLocation: true
+        }));
+
+        // Create directions control
+        var directions = new MapboxDirections({
+            accessToken: mapboxgl.accessToken,
+            unit: 'metric',
+            profile: 'mapbox/walking',
+            controls: {
+                inputs: false
+            }
+        });
+
+        // Add directions control to the map
+        map.addControl(directions, 'top-left');
+
+        // Watch for geolocation updates
+        map.on('geolocate', function(e) {
+            var userLngLat = [e.coords.longitude, e.coords.latitude];
+
+            // Calculate distance between user and hazards
+            hazardData.forEach(function(hazard) {
+                var distance = mapboxgl.LngLat.distance(userLngLat, hazard.lngLat);
+
+                // Display alert if user is within 100 meters of a hazard
+                if (distance <= 100) {
+                    document.getElementById('popup').style.display = 'block';
+                } else {
+                    document.getElementById('popup').style.display = 'none';
+                }
+            });
+        });
+
+        // Close the popup when the close button is clicked
+        document.getElementById('closePopup').addEventListener('click', function() {
+            document.getElementById('popup').style.display = 'none';
         });
     </script>
 </body>
 </html>
+
+        
