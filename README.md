@@ -4,8 +4,7 @@
 This project implements a hazard map using Mapbox GL JS. The map displays hazard locations, and a popup alert is shown if the user is within 100 meters of a hazard.
 
 ## Demo
-
-
+![pathhole1](https://github.com/saitej13sai/sai-map/assets/116536627/9b000a92-b9cd-4455-a550-d354dc855027)
 ## Getting Started
 
 ### Prerequisites
