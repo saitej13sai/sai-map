@@ -5,6 +5,7 @@ This project implements a hazard map using Mapbox GL JS. The map displays hazard
 
 ## Demo
 ![pathhole1](https://github.com/saitej13sai/sai-map/assets/116536627/9b000a92-b9cd-4455-a550-d354dc855027)
+Live User Location and Pothole Visualization on the Map
 ## Getting Started
 
 ### Prerequisites
