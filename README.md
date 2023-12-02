@@ -17,9 +17,7 @@ Proximity Alert for Pothole
 - [Mapbox Access Token](https://www.mapbox.com/)
 - Modern web browser
 
-### Installation
+## about project
+Road safety and the mitigation of accidents caused by road hazards have been subjects of extensive research. Various approaches have been proposed, including traditional methods such as visual inspections and data-driven methods employing sensor networks and computer vision techniques. Moreover, the integration of GPS technology and map visualization in hazard detection systems has shown significant potential in enhancing user awareness and proactive response to road hazards.
 
-1. Clone the repository:
 
-   ```bash
-   git clone https://github.com/your-username/hazard-map.git
